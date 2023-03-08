@@ -50,6 +50,8 @@ class Test_General(unittest.TestCase):
         self.assertEqual(c.get_copy_status(), General.CopyStatus.TYPE_MISMATCH)
         c.copy(b)
         self.assertEqual(c.get_copy_status(), General.CopyStatus.OK)
+        self.assertTrue(c.is_equal(b))
+        self.assertTrue(c.is_deep_equal(b))
         self.assertIs(c.x.y, b.x.y)
         self.assertIs(c.y, b.y)
 
@@ -62,8 +64,26 @@ class Test_General(unittest.TestCase):
         self.assertEqual(c.get_deep_copy_status(), General.DeepCopyStatus.TYPE_MISMATCH)
         c.deep_copy(b)
         self.assertEqual(c.get_deep_copy_status(), General.DeepCopyStatus.OK)
+        self.assertFalse(c.is_equal(b))
+        self.assertTrue(c.is_deep_equal(b))
         self.assertIsNot(c.x.y, b.x.y)
         self.assertIsNot(c.y, b.y)
+
+    def test_serialize(self):
+        f = Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))
+        self.assertEqual(
+            f.serialize(),
+            'Foo{x: Boo{x: int(1), y: Foo{x: int(2), y: str(3)}}, ' + \
+                'y: Boo{x: int(4), y: str(5)}}')
+    
+    def test_deserialize(self):
+        f = Foo(None, None)
+        f.deserialize(
+            'Foo{x: Boo{x: int(1), y: Foo{x: int(2), y: str(3)}}, ' + \
+                'y: Boo{x: int(4), y: str(5)}}')
+        self.assertEqual(f.get_deserialize_status(), Foo.DeserializeStatus.OK)
+        self.assertTrue(f.is_deep_equal(
+            Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))))
 
 
 if __name__ == "__main__":
