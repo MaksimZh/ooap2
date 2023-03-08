@@ -184,6 +184,14 @@ class General(ABC):
                       for name, value in self.__get_contents()) + \
             "}"
     
+    # Получить упрощённое строковое представление объекта
+    def print(self) -> str:
+        return _type_to_str(self.get_type()) + "(" + \
+            ", ".join(name + "=" + _print(value) \
+                      for name, value in self.__get_contents()) + \
+            ")"
+
+    
     # Рекурсивное создание копии данного объекта
     def clone(self) -> "General":
         other: General = self.__new__(self.get_type())
@@ -228,6 +236,13 @@ def _serialize(o: typing.Any) -> str:
             .replace(")", "\\)") \
             .replace("\\", "\\\\")
     return _type_to_str(type(o)) + '(' + str(o) + ')'
+
+def _print(o: typing.Any) -> str:
+    if isinstance(o, General):
+        return o.print()
+    if isinstance(o, str):
+        return f'"{o}"'
+    return str(o)
 
 def _lex(s: str, acc: list[_Token]) -> None:
     if len(s) == 0:

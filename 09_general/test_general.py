@@ -84,6 +84,10 @@ class Test_General(unittest.TestCase):
         self.assertEqual(f.get_deserialize_status(), Foo.DeserializeStatus.OK)
         self.assertTrue(f.is_deep_equal(
             Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))))
+        
+    def test_print(self):
+        f = Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))
+        self.assertEqual(f.print(), 'Foo(x=Boo(x=1, y=Foo(x=2, y="3")), y=Boo(x=4, y="5"))')
 
 
 if __name__ == "__main__":
