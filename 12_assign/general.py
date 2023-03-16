@@ -167,7 +167,7 @@ class General:
 
     # Присвоить данному объекту значение другого объекта
     @staticmethod
-    def assignment_attempt(target: "list[General]", source: "General") -> None:
+    def assignment_attempt(target: list[typing.Any], source: "General") -> None:
         if not issubclass(source.get_type(), target[0].get_type()):
             target[0] = source.__new_empty()
             target[0].__assignment_status = General.AssignmentStatus.TYPE_MISMATCH
