@@ -11,9 +11,6 @@ class Boo(Any):
         self.x = x
         self.y = y
 
-    def get_type(self) -> type:
-        return Boo
-    
 class Foo(Any):
 
     def __init__(self, x: Anything, y: Anything) -> None:
@@ -21,8 +18,8 @@ class Foo(Any):
         self.x = x
         self.y = y
 
-    def get_type(self) -> type:
-        return Foo
+class Bar(Boo):
+    pass
 
 
 class Test_General(unittest.TestCase):
@@ -71,24 +68,24 @@ class Test_General(unittest.TestCase):
 
     def test_serialize(self):
         f = Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))
-        print(f.serialize)
-        self.assertEqual(
-            f.serialize(),
-            'Foo{x: Boo{x: int(1), y: Foo{x: int(2), y: str(3)}}, ' + \
-                'y: Boo{x: int(4), y: str(5)}}')
-    
-    def test_deserialize(self):
-        f = Foo(None, None)
-        f.deserialize(
-            'Foo{x: Boo{x: int(1), y: Foo{x: int(2), y: str(3)}}, ' + \
-                'y: Boo{x: int(4), y: str(5)}}')
-        self.assertEqual(f.get_deserialize_status(), Foo.DeserializeStatus.OK)
-        self.assertTrue(f.is_deep_equal(
-            Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))))
+        s = f.serialize()
+        g = Foo.deserialize(s)
+        self.assertEqual(g.get_deserialize_status(), General.DeserializeStatus.OK)
+        self.assertTrue(g.is_deep_equal(f))
         
     def test_print(self):
         f = Foo(Boo(1, Foo(2, "3")), Boo(4, "5"))
         self.assertEqual(f.print(), 'Foo(x=Boo(x=1, y=Foo(x=2, y="3")), y=Boo(x=4, y="5"))')
+
+    def test_assign(self):
+        f = Foo(2, "3")
+        b = Boo(4, "5")
+        v = [Boo(6, "y")]
+        Any.assignment_attempt(v, f)
+        self.assertTrue(v[0].get_assignment_status(), General.AssignmentStatus.TYPE_MISMATCH)
+        Any.assignment_attempt(v, b)
+        self.assertTrue(v[0].get_assignment_status(), General.AssignmentStatus.OK)
+        self.assertTrue(v[0] is b)
 
 
 if __name__ == "__main__":
