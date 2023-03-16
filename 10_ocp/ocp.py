@@ -27,7 +27,8 @@ class FinalMeta(type):
             cls, class_name: str, bases: tuple[type, ...],
             namespace: dict[str, Any], **kwargs: Any
             ) -> type:
-        # Перебираем все методы нового
+        # Перебираем все методы нового класса
+        # и проверяем не определены ли они как `final` в классах-предках
         for name, member in namespace.items():
             if not isfunction(member):
                 continue
