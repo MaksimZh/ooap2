@@ -36,7 +36,7 @@ class FinalMeta(type):
                 f"Overriding final method {class_name}.{name}"
         return super().__new__(cls, class_name, bases, namespace, **kwargs)
 
-    # Рекурсивный поиск определения метода в базовых классов
+    # Рекурсивный поиск определения метода в базовых классах
     # с проверкой не помечен ли он декоратором `final`
     @staticmethod
     def __is_final_in_base(name: str, bases: tuple[type, ...]) -> bool:
