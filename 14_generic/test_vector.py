@@ -47,6 +47,31 @@ class Test_Vector(unittest.TestCase):
             Vector[Int](Int(1111), Int(1212), Int(1313)),
             Vector[Int](Int(2121), Int(2222), Int(2323)))))
 
+    def test_nested_2(self):
+        a = Vector[Vector[Vector[Int]]](
+            Vector[Vector[Int]](
+                Vector[Int](Int(111), Int(112), Int(113)),
+                Vector[Int](Int(121), Int(122), Int(123))),
+            Vector[Vector[Int]](
+                Vector[Int](Int(211), Int(212), Int(213)),
+                Vector[Int](Int(221), Int(222), Int(223))))
+        b = Vector[Vector[Vector[Int]]](
+            Vector[Vector[Int]](
+                Vector[Int](Int(111000), Int(112000), Int(113000)),
+                Vector[Int](Int(121000), Int(122000), Int(123000))),
+            Vector[Vector[Int]](
+                Vector[Int](Int(211000), Int(212000), Int(213000)),
+                Vector[Int](Int(221000), Int(222000), Int(223000))))
+        c = a.add(b)
+        assert c
+        self.assertTrue(c.is_deep_equal(Vector[Vector[Vector[Int]]](
+            Vector[Vector[Int]](
+                Vector[Int](Int(111111), Int(112112), Int(113113)),
+                Vector[Int](Int(121121), Int(122122), Int(123123))),
+            Vector[Vector[Int]](
+                Vector[Int](Int(211211), Int(212212), Int(213213)),
+                Vector[Int](Int(221221), Int(222222), Int(223223))))))
+
 
 if __name__ == "__main__":
     unittest.main()
